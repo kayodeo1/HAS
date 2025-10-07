@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions">
+
+<h:head>
+	<f:metadata>
+	<f:viewAction action="#{userBean.searchAll}" />
+	</f:metadata>
+</h:head>
+
+<h:body>
+
+	<ui:composition template="/online/templates/master.xhtml">
+		<ui:define name="body_title">
+			<strong>User Management</strong>
+		</ui:define>
+					
+
+		<ui:define name="body_">
+			<h:form prependId="false" rendered="true">
+			<p:growl sticky="true" globalOnly="true"></p:growl>
+		
+		<p:dataTable id="users" var="user" value="#{userBean.lazyModel}"
+							reflow="true" paginator="true" rows="5"
+							paginatorPosition="bottom"
+							currentPageReportTemplate="Showing {startRecord}-{endRecord} out of {totalRecords}"
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+							rowsPerPageTemplate="5,10,15" selectionMode="single"
+							selection="#{userBean.user}" lazy="true" rowKey="#{user.id}"
+							rowSelector="">
+							<f:facet name="header">
+								<b>Users</b>
+							</f:facet>
+
+							<!-- <p:column headerText="ID">
+								<h:outputText value="#{user.id}" />
+							</p:column> -->
+							<p:column headerText="matricNumber" style="text-align:center;">
+								<h:outputText value="#{user.matricNumber}" />
+							</p:column>
+							<p:column headerText="Full Name" style="text-align:center;"
+								sortBy="#{entry.fullname}" filterBy="#{entry.fullname}"
+								filterMatchMode="contains">
+								<h:outputText value="#{user.fullname}" />
+							</p:column>
+							<p:column headerText="Roles" style="text-align:center;">
+								<h:outputText value="#{user.roles}" />
+							</p:column>
+							<p:column headerText="Department" style="text-align:center;"
+								sortBy="#{entry.department}" filterBy="#{entry.department}"
+								filterMatchMode="contains">
+								<h:outputText value="#{user.department}" />
+							</p:column>
+							<p:column headerText="Level" style="text-align:center;"
+								sortBy="#{entry.level}"
+								>
+								<h:outputText value="#{user.level}" />
+							</p:column>
+							
+							<p:column headerText="">
+								<p:menuButton value="Action" style="font-size:1em!important;">
+									<p:menuitem value="Update Role" icon="ui-icon-arrowrefresh-1-w"
+										action="#{userBean.createUpdateRoleView}">
+
+										<f:setPropertyActionListener value="#{user}"
+											target="#{userBean.user}" />
+									</p:menuitem>
+									
+								</p:menuButton>
+							</p:column>
+						</p:dataTable>
+			
+			
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+<!-- <p:menuitem value="Edit User" icon="ui-icon-arrowrefresh-1-w"
+										action="#{userBean.createEditUserView}">
+
+										<f:setPropertyActionListener value="#{user}"
+											target="#{userBean.user}" />
+									</p:menuitem>
+									<p:separator />
+									<p:menuitem value="Disable" icon="ui-icon-arrowrefresh-1-w"
+										action="#{userBean.disableUser(user)}"
+										rendered="#{userBean.hasRole('SUPER_ADMIN')}">
+									</p:menuitem>
+									<p:separator
+										rendered="#{userBean.hasRole('SUPER_ADMIN')  and user.status eq 'DISABLED'}" />
+									<p:menuitem immediate="true" ajax="false"
+										value="Unlock Profile" icon="ui-icon-arrowrefresh-1-w"
+										action="#{userBean.unlockUser(user)}"
+										rendered="#{userBean.hasRole('SUPER_ADMIN')  and user.status eq 'DISABLED'}">
+									</p:menuitem> -->
+</html>

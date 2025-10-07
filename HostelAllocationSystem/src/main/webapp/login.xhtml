@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Login - Hostel Management System</title>
+    
+    <!-- PrimeFaces Theme -->
+    <h:outputStylesheet name="primefaces-saga/theme.css" library="primefaces-themes"/>
+    
+    <!-- Custom Login Styles -->
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #fbbf24;
+            --accent-color: #059669;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 1000px;
+            min-height: 600px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+        }
+
+        .login-left {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .login-left::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="b" gradientUnits="userSpaceOnUse" cx="500" cy="500" r="500"><stop offset="0" stop-color="white" stop-opacity="0.1"/><stop offset="1" stop-color="white" stop-opacity="0"/></radialGradient></defs><rect width="1000" height="1000" fill="url(%23b)"/></svg>') center/cover;
+            opacity: 0.3;
+        }
+
+        .university-info {
+            position: relative;
+            z-index: 2;
+        }
+
+        .university-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 10px;
+            object-fit: cover;
+        }
+
+        .university-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .university-tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .system-features {
+            text-align: left;
+            width: 100%;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        .login-right {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .login-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .form-input:invalid {
+            border-color: #dc2626;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(135deg, #1e40af 0%, var(--primary-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(30, 58, 138, 0.2);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .login-footer {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Error Messages */
+        .ui-messages {
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: var(--accent-color);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Loading State */
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                max-width: 450px;
+            }
+            
+            .login-left {
+                padding: 2rem;
+                min-height: 300px;
+            }
+            
+            .university-name {
+                font-size: 1.5rem;
+            }
+            
+            .university-tagline {
+                font-size: 1rem;
+            }
+            
+            .system-features {
+                display: none;
+            }
+            
+            .login-right {
+                padding: 2rem;
+            }
+            
+            .login-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .login-container {
+                border-radius: 15px;
+            }
+            
+            .login-left,
+            .login-right {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="login-container">
+        <!-- Left Side - University Info -->
+        <div class="login-left">
+            <div class="university-info">
+                <h:graphicImage value="/resources/images/oou.jpeg" 
+                               styleClass="university-logo" 
+                               alt="Oduduwa University Logo"/>
+                
+                <h1 class="university-name">Oduduwa University</h1>
+                <p class="university-tagline">Learning for Human Development</p>
+                
+                <div class="system-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">🏠</div>
+                        <div>
+                            <div style="font-weight: 600;">Smart Allocation</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">Automated hostel room assignment</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <div>
+                            <div style="font-weight: 600;">Real-time Tracking</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">Monitor allocation status live</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">🔐</div>
+                        <div>
+                            <div style="font-weight: 600;">Secure System</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">Role-based access control</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Side - Login Form -->
+        <div class="login-right">
+            <div class="login-header">
+                <h2 class="login-title">Welcome Back</h2>
+                <p class="login-subtitle">Please sign in to access the hostel management system</p>
+            </div>
+            
+            <!-- Messages -->
+            <p:messages id="loginMessages" showDetail="false" showSummary="true" closable="true"/>
+            
+            <h:form id="loginForm" styleClass="login-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <i class="pi pi-user" style="margin-right: 0.5rem;"></i>
+                        Username (Matric No./Staff ID)
+                    </label>
+                    <p:inputText id="username" 
+                                value="#{loginBean.matricNumber}" 
+                                required="true"
+                                requiredMessage="Username is required"
+                                styleClass="form-input"
+                                placeholder="Enter your matric number or staff ID"
+                                maxlength="30"/>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="pi pi-lock" style="margin-right: 0.5rem;"></i>
+                        Password
+                    </label>
+                    <p:password id="password" 
+                               value="#{loginBean.password}" 
+                               required="true"
+                               requiredMessage="Password is required"
+                               styleClass="form-input"
+                               placeholder="Enter your password"
+                               feedback="false"
+                               toggleMask="true"/>
+                </div>
+                
+               
+                
+                <p:commandButton id="loginButton"
+                                value="Sign In"
+                                action="#{loginBean.login}"
+                                styleClass="login-button"
+                                process="loginForm"
+                                update="loginMessages"
+                                onstart="showLoading()"
+                                oncomplete="hideLoading()"/>
+                
+                <div class="forgot-password">
+                    <h:link value="Forgot your password?" outcome="forgot-password"/>
+                </div>
+            </h:form>
+            
+            <div class="login-footer">
+                <p> 2025 Oduduwa University. All rights reserved.</p>
+                <p style="margin-top: 0.5rem;">
+                    <strong>IT Support:</strong> 
+                    <a href="mailto:itsupport@oduduwa.edu.ng" style="color: var(--primary-color);">
+                        itsupport@oduduwa.edu.ng
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showLoading() {
+            const button = document.querySelector('.login-button');
+            if (button) {
+                button.disabled = true;
+                button.innerHTML = '<span class="loading-spinner"></span>Signing In...';
+            }
+        }
+        
+        function hideLoading() {
+            const button = document.querySelector('.login-button');
+            if (button) {
+                button.disabled = false;
+                button.innerHTML = 'Sign In';
+            }
+        }
+        
+        // Auto-focus username field on page load
+        window.addEventListener('load', function() {
+            const usernameField = document.getElementById('loginForm:username');
+            if (usernameField) {
+                usernameField.focus();
+            }
+        });
+        
+        // Handle Enter key submission
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                const loginButton = document.getElementById('loginForm:loginButton');
+                if (loginButton &amp; !loginButton.disabled) {
+                    loginButton.click();
+                }
+            }
+        });
+    </script>
+</h:body>
+</html>

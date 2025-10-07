@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions">
+
+<h:head>
+	<f:metadata>
+		<f:viewAction action="#{allocationBean.listAllocation()}" />
+	</f:metadata>
+</h:head>
+
+<h:body>
+
+	<ui:composition template="/online/templates/master.xhtml">
+		<ui:define name="body_title">
+			<strong>Manage Allocation Entries</strong>
+		</ui:define>
+
+		<ui:define name="body_">
+			<h:form prependId="false" rendered="true">
+				<p:ajaxStatus onstart="PF('status').show()"
+					oncomplete="PF('status').hide()" />
+				<p:dialog widgetVar="status" modal="true" closable="false">
+					<p:graphicImage library="img" name="load4.jpg" />
+				</p:dialog>
+				<p:messages id="global_msg" />
+				<div class="box box-primary">
+					<div class="box-header with-border">
+
+						<p:outputPanel id="viewAllocation"
+							style="text-align:center;">
+
+							<p:dataTable id="allocationList"
+								var="entry" value="#{allocationBean.lazyModel}" paginator="true"
+								rows="5" paginatorPosition="bottom"
+								currentPageReportTemplate="Showing {startRecord}-{endRecord} out of {totalRecords}"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								rowsPerPageTemplate="5,10,15" selectionMode="single"
+								selection="#{allocationBean.entry}" lazy="true"
+								rowKey="#{entry.id}">
+								<f:facet name="header">
+									<hr />
+									<p:spacer></p:spacer>
+									<b></b>
+									<strong>Allocation</strong> Entries Details </f:facet>
+
+
+								 
+								 <p:column headerText="StudentName" filterBy="#{entry.userName}"
+								filterMatchMode="contains"
+									style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.userName==null} " />
+									<h:outputText value="#{entry.userName}"/>
+								</p:column> 
+								 <p:column headerText="roomId"
+									style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.roomId==null} " />
+									<h:outputText value="#{entry.roomId}"/>
+								</p:column> 
+								 <p:column headerText="status"
+									style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.status==null} " />
+									<h:outputText value="#{entry.status}"/>
+								</p:column> 
+								 <p:column headerText="allocationMethod"
+									style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.allocationMethod==null} " />
+									<h:outputText value="#{entry.allocationMethod}"/>
+								</p:column> 
+								
+								 <p:column headerText="Alllocation Time"
+									style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.allocationTime==null} " />
+									<h:outputText value="#{entry.allocationTime}"/>
+								</p:column> 
+								
+								<p:column headerText="">
+									<p:menuButton value="Action">
+										
+								</p:menuButton>
+								</p:column>
+							</p:dataTable>
+							
+
+						</p:outputPanel>
+					</div>
+				</div>
+
+
+			
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+<!-- <p:menuitem value="Edit" icon="ui-icon-arrowrefresh-1-w"
+											style="font-size:1em!important;" process="@this"
+											
+											immediate="true">
+											
+										</p:menuitem>
+										<p:menuitem value="View" icon="ui-icon-arrowrefresh-1-w"
+											style="font-size:1em!important;" process="@this"
+											
+											immediate="true">
+											
+										</p:menuitem> -->
+</html>

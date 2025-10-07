@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions">
+
+<h:head>
+	<f:metadata>
+		<f:viewAction action="#{roomBean.listRoom()}" />
+	</f:metadata>
+</h:head>
+
+<h:body>
+
+	<ui:composition template="/online/templates/master.xhtml">
+		<ui:define name="body_title">
+			<strong>Manage Room Entries</strong>
+		</ui:define>
+
+		<ui:define name="body_">
+			<h:form prependId="false" rendered="true">
+				<p:ajaxStatus onstart="PF('status').show()"
+					oncomplete="PF('status').hide()" />
+				<p:dialog widgetVar="status" modal="true" closable="false">
+					<p:graphicImage library="img" name="load4.jpg" />
+				</p:dialog>
+				<p:messages id="global_msg" />
+				<div class="box box-primary">
+					<div class="box-header with-border">
+
+						<p:outputPanel id="viewRoom" style="text-align:center;">
+
+							<p:dataTable id="roomList" var="entry"
+								value="#{roomBean.lazyModel}" paginator="true" rows="5"
+								paginatorPosition="bottom"
+								currentPageReportTemplate="Showing {startRecord}-{endRecord} out of {totalRecords}"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								rowsPerPageTemplate="5,10,15" selectionMode="single"
+								selection="#{roomBean.entry}" lazy="true" rowKey="#{entry.id}">
+								<f:facet name="header">
+									<hr />
+									<p:spacer></p:spacer>
+									<b></b>
+									<strong>Room</strong> Entries Details </f:facet>
+
+
+
+								<p:column headerText="Hostel" style="text-align:center;" >
+									<h:outputText value="NA" rendered="#{entry.hostelId==null} " />
+									<h:outputText value="#{entry.hostelName}" />
+								</p:column>
+								<p:column headerText="Room Number" style="text-align:center;" >
+									<h:outputText value="#{entry.roomNumber}" />
+								</p:column>
+								<p:column headerText="amount" style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.amount==null} " />
+									<h:outputText value="#{entry.amount}">
+										<f:convertNumber pattern="¤#,##0.00" currencySymbol="&#8358;" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="isFull" style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.isFull==null} " />
+									<h:outputText value="#{entry.isFull}" />
+								</p:column>
+								
+								<p:column headerText="size" style="text-align:center;">
+									<h:outputText value="NA" rendered="#{entry.size==null} " />
+									<h:outputText value="#{entry.size}" />
+								</p:column>
+								<p:column headerText="description" style="text-align:center;" filterBy="#{entry.description}"
+								filterMatchMode="contains">
+									<h:outputText value="NA" rendered="#{entry.description==null} " />
+									<h:outputText value="#{entry.description}" />
+								</p:column>
+								<p:column headerText="">
+									<p:menuButton value="Action">
+										
+									</p:menuButton>
+								</p:column>
+							</p:dataTable>
+							<p:commandButton id="submitButton" immediate="true"
+								rendered="true" action="#{roomBean.createNewRoomView}"
+								oncomplete="PF('roomDialog').show()"
+								update="roomView,global_msg" value="Create New Room">
+								<p:resetInput target="roomView" />
+							</p:commandButton>
+
+						</p:outputPanel>
+					</div>
+				</div>
+
+
+				<p:dialog header="Create room for #{roomBean.hostel.name}" widgetVar="roomDialog"
+					id="roomDialog" modal="true" showEffect="fade" hideEffect="fade"
+					resizable="true" width="500" height="auto"
+					style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+
+					<p:outputPanel id="roomView"
+						style="padding: 20px; background: #f8f9fa;">
+
+						<!-- Messages Panel -->
+						<p:messages id="view_equip" severity="info,error"
+							globalOnly="true" style="margin-bottom: 20px;" />
+
+						<!-- Main Content Panel -->
+						<p:panel rendered="#{not empty roomBean.entry}"
+							style="border: none; background: white; border-radius: 6px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+
+							<!-- Header Section -->
+							<f:facet name="header">
+								<div
+									style="display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: #2c3e50;">
+									<p:graphicImage name="img/user_groups_admin.png"
+										style="width: 24px; height: 24px;" />
+									Room ID: #{roomBean.entry.id}
+								</div>
+							</f:facet>
+
+							<!-- Form Grid -->
+							<p:panelGrid columns="1" style="width: 100%; border: none;"
+								columnClasses="form-row">
+
+								<!-- Amount Section -->
+								<div style="margin-bottom: 20px;">
+									<p:outputLabel for="amount" value="Amount Per Occupant"
+										style="display: block; margin-bottom: 8px; font-weight: 500; color: #34495e;" />
+									<p:inputText id="amount" value="#{roomBean.amount}"
+										required="true" requiredMessage="Amount must be supplied"
+										validatorMessage="Invalid value supplied!"
+										style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 4px; font-size: 14px;"
+										styleClass="form-input">
+										<f:validateDoubleRange />
+									</p:inputText>
+									<p:message id="m_amount" for="amount"
+										style="display: block; margin-top: 5px; color: #e74c3c; font-size: 12px;" />
+								</div>
+
+								<!-- Occupants Section -->
+								<div style="margin-bottom: 20px;">
+									<p:outputLabel for="occupants" value="Number of Occupants"
+										style="display: block; margin-bottom: 8px; font-weight: 500; color: #34495e;" />
+									<p:inputNumber id="occupants" value="#{roomBean.roomSize}" 
+										 maxValue="8" required="true" 
+										requiredMessage="Number of occupants must be supplied"
+										style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 4px; font-size: 14px;"
+										styleClass="form-input" />
+									<p:message id="m_occupants" for="occupants"
+										 />
+								</div>
+
+								<!-- Description Section -->
+								<div style="margin-bottom: 20px;">
+									<p:outputLabel for="description" value="Description"
+										style="display: block; margin-bottom: 8px; font-weight: 500; color: #34495e;" />
+									<p:inputText id="description" required="true" requiredMessage="Description must be supplied"
+										value="#{roomBean.entry.description}"
+										style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 4px; font-size: 14px;"
+										styleClass="form-input" />
+									<p:message id="m_description" for="description"
+										 />
+								</div>
+
+								<!-- Number of Rooms Section -->
+								<div style="margin-bottom: 30px;">
+									<p:outputLabel for="number" value="How Many Rooms to Create"
+										style="display: block; margin-bottom: 8px; font-weight: 500; color: #34495e;" />
+									<p:inputNumber id="number" minValue="1" maxValue="20" value="#{roomBean.number}"
+										style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 4px; font-size: 14px;"
+										styleClass="form-input" required="true" requiredMessage="number must be supplied"/>
+									<p:message id="m_number" for="number"
+										 />
+								</div>
+
+								<!-- Action Buttons -->
+								<div
+									style="text-align: center; padding-top: 20px; border-top: 1px solid #e9ecef;">
+									<p:commandButton rendered="#{roomBean.entry.id==null}"
+										id="submitButton2" ajax="true" process="roomView"
+										actionListener="#{roomBean.createRoom}" value="Create Room"
+										update="roomView,global_msg"
+										style="background: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; margin-right: 10px;"
+										onmouseover="this.style.background='#229954'"
+										onmouseout="this.style.background='#27ae60'" />
+
+									<p:commandButton rendered="#{roomBean.entry.id!=null}"
+										id="submitButton3" ajax="true" process="roomView"
+										actionListener="#{roomBean.updateRoom}" value="Update Room"
+										update="roomView,global_msg"
+										style="background: #3498db; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; margin-right: 10px;"
+										onmouseover="this.style.background='#2980b9'"
+										onmouseout="this.style.background='#3498db'" />
+								</div>
+
+							</p:panelGrid>
+						</p:panel>
+
+					</p:outputPanel>
+				</p:dialog>
+
+				<!-- Additional CSS for enhanced styling and responsiveness -->
+				<style>
+.form-input:focus {
+	border-color: #3498db !important;
+	box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2) !important;
+	outline: none !important;
+}
+
+.ui-dialog {
+	max-height: 90vh !important;
+}
+
+.ui-dialog-content {
+	max-height: calc(90vh - 120px) !important;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
+	padding: 0 !important;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+	color: white !important;
+	border: none !important;
+	border-radius: 8px 8px 0 0 !important;
+	padding: 12px 15px !important;
+	font-weight: 600 !important;
+	font-size: 16px !important;
+}
+
+.ui-messages {
+	border-radius: 4px !important;
+	border-left: 4px solid #3498db !important;
+	margin-bottom: 15px !important;
+}
+
+.ui-messages-info {
+	background: #e3f2fd !important;
+	color: #1976d2 !important;
+	border-left-color: #2196f3 !important;
+}
+
+.ui-messages-error {
+	background: #ffebee !important;
+	color: #c62828 !important;
+	border-left-color: #f44336 !important;
+}
+
+/* Mobile responsiveness */
+@media ( max-width : 768px) {
+	.ui-dialog {
+		width: 95% !important;
+		margin: 10px !important;
+		max-width: none !important;
+	}
+	.ui-dialog-content {
+		padding: 0 !important;
+	}
+	.form-input {
+		font-size: 16px !important; /* Prevents zoom on iOS */
+	}
+
+	/* Stack buttons vertically on mobile */
+	.ui-dialog .ui-commandbutton {
+		display: block !important;
+		width: 100% !important;
+		margin: 5px 0 !important;
+		box-sizing: border-box !important;
+	}
+}
+
+@media ( max-width : 480px) {
+	.ui-dialog {
+		width: 98% !important;
+		margin: 5px !important;
+	}
+	.ui-panel-content {
+		padding: 10px !important;
+	}
+	.ui-dialog .ui-dialog-titlebar {
+		padding: 10px 12px !important;
+		font-size: 14px !important;
+	}
+}
+
+/* Ensure proper box-sizing for all elements */
+* {
+	box-sizing: border-box;
+}
+
+/* Scrollbar styling */
+.ui-dialog-content::-webkit-scrollbar {
+	width: 6px;
+}
+
+.ui-dialog-content::-webkit-scrollbar-track {
+	background: #f1f1f1;
+	border-radius: 3px;
+}
+
+.ui-dialog-content::-webkit-scrollbar-thumb {
+	background: #c1c1c1;
+	border-radius: 3px;
+}
+
+.ui-dialog-content::-webkit-scrollbar-thumb:hover {
+	background: #a8a8a8;
+}
+</style>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+<!-- <p:menuitem value="Edit" icon="ui-icon-arrowrefresh-1-w"
+											style="font-size:1em!important;" process="@this"
+											actionListener="#{roomBean.displayRoomDialog(entry)}"
+											update="roomView,global_msg" immediate="true"
+											oncomplete="PF('roomDialog').show()">
+											<p:resetInput target="roomView" />
+										</p:menuitem> -->
+
+</html>

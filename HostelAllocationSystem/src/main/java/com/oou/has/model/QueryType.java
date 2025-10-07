@@ -1,0 +1,11 @@
+/**
+ *
+ */
+package com.oou.has.model;
+
+/**
+ *
+ */
+public enum QueryType {
+	 GET_ALL_USER,GET_ALL_TRANSACTION, GET_ALL_USER_TRANSACTION, GET_ALL_HOSTEL, GET_ALL_ROOM, GET_HOSTEL_ROOM, GET_ALL_ALLOCATION, GET_ALL_ENABLED_USER
+}

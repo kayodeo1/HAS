@@ -1,0 +1,10 @@
+package com.oou.has.model;
+
+/**
+ * @author Kayode
+ */
+public enum Status {
+
+	UNVERIFIED,ENABLED,IN_PROGRES,NOT_APPLIED,ALLOCATED,APPLICATION_FAILED, PENDING, SUCCESSFUL,FAILED,REFUNDED,APPLIED,DISABLED
+
+}
